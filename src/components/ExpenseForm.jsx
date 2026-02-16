@@ -8,7 +8,7 @@ const initialState = {
   title: "",
   category: "",
   amount: "",
-  email: "",
+  // email: "",
 };
 
 function reducer(state, action) {
@@ -46,11 +46,11 @@ function ExpenseForm() {
     if (!state.amount || state.amount <= 0) {
       errorsData.amount = "Amount is required and must be greater than zero";
     }
-    if (!state.email.trim()) {
-      errorsData.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(state.email)) {
-      errorsData.email = "Email is invalid";
-    }
+    // if (!state.email.trim()) {
+    //   errorsData.email = "Email is required";
+    // } else if (!/\S+@\S+\.\S+/.test(state.email)) {
+    //   errorsData.email = "Email is invalid";
+    // }
     setErrors(errorsData);
     return errorsData;
   }
@@ -73,7 +73,11 @@ function ExpenseForm() {
     //   category: "",
     //   amount: "",
     // });
-    if (!state.title || !state.category || !state.amount || !state.email) {
+    if (
+      !state.title ||
+      !state.category ||
+      !state.amount /* || !state.email */
+    ) {
       return setErrors("Please fill all the fields");
     }
     reduxDispatch(addExpense({ ...state, id: crypto.randomUUID() })); //redux
@@ -109,7 +113,7 @@ function ExpenseForm() {
         type="number"
         error={errors.amount}
       />
-      <Input
+      {/* <Input
         id="email"
         label="Email"
         name="email"
@@ -117,7 +121,7 @@ function ExpenseForm() {
         onChange={inputHandler}
         type="email"
         error={errors.email}
-      />
+      /> */}
       <button className="add-btn">Add</button>
     </form>
   );

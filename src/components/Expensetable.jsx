@@ -1,20 +1,27 @@
-import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteExpense, editExpenseStart } from "../Redux/store/expenseSlice";
 import { MdDelete } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
+import { useFilter } from "../Hooks/useFilter";
 
 function Expensetable() {
   const expenses = useSelector((state) => state.expense.expenses);
   const dispatch = useDispatch();
 
-  const [category, setCategory] = useState("");
+  const { setQuery, filteredData } = useFilter(
+    expenses,
+    (item) => item.category,
+  );
 
-  const filterCategory = expenses.filter((item) => {
-    return category === "" || item.category === category;
-  });
+  // const [category, setCategory] = useState("");
 
-  const total = filterCategory.reduce(
+  // const filterCategory = expenses.filter((item) => {
+  //   // return category === "" || item.category === category;
+  //   // return category ? item.category === category : true;
+  //   return item.category.toLowerCase().includes(category.toLowerCase());
+  // });
+
+  const total = filteredData.reduce(
     (acc, expense) => acc + Number(expense.amount),
     0,
   );
@@ -24,12 +31,12 @@ function Expensetable() {
         <thead>
           <tr>
             <th style={{ width: "700px" }}>Title</th>
-            <th style={{ width: "300px" }}>
+            <th style={{ width: "500px" }}>
               <select
                 name="category"
                 id="category"
                 onChange={(e) => {
-                  setCategory(e.target.value);
+                  setQuery(e.target.value);
                 }}
               >
                 <option value="">All</option>
@@ -68,7 +75,7 @@ function Expensetable() {
           </tr>
         </thead>
         <tbody>
-          {filterCategory.map((expense) => {
+          {filteredData.map((expense) => {
             return (
               <tr key={expense.id}>
                 <td>{expense.title}</td>
