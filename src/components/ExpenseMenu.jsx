@@ -1,5 +1,8 @@
 import { useDispatch } from "react-redux";
-import { deleteExpense, editExpenseStart } from "../Redux/store/expenseSlice";
+import {
+  deleteExpense,
+  editExpenseFormStart,
+} from "../Redux/store/expenseSlice";
 
 function ExpenseMenu({ contextMenu, setContextMenu }) {
   const { expenseId, title, category, amount } = contextMenu;
@@ -19,9 +22,8 @@ function ExpenseMenu({ contextMenu, setContextMenu }) {
     >
       <div
         onClick={() => {
-          console.log("Edit");
           dispatch(
-            editExpenseStart({ id: expenseId, title, category, amount }),
+            editExpenseFormStart({ id: expenseId, title, category, amount }),
           );
           setContextMenu({});
         }}

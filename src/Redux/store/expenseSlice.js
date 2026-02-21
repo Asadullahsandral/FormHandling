@@ -4,6 +4,7 @@ import expenseData from "../../../expenseData";
 const initialState = {
   expenses: expenseData,
   editingExpense: null,
+  editingExpenseForm: null,
 };
 
 const expenseSlice = createSlice({
@@ -12,11 +13,13 @@ const expenseSlice = createSlice({
   reducers: {
     addExpense: (state, action) => {
       state.expenses.push(action.payload);
+      // localStorage.setItem("expenses", JSON.stringify(state.expenses));
     },
     deleteExpense: (state, action) => {
       state.expenses = state.expenses.filter(
         (item) => item.id !== action.payload,
       );
+      // localStorage.removeItem("expenses");
     },
     // editExpense: (state, action) => {
     //   const { id, title, category, amount } = action.payload;
@@ -30,15 +33,19 @@ const expenseSlice = createSlice({
     editExpenseStart: (state, action) => {
       state.editingExpense = action.payload;
     },
+    editExpenseFormStart: (state, action) => {
+      state.editingExpenseForm = action.payload;
+    },
     updateExpense: (state, action) => {
       const index = state.expenses.findIndex(
         (item) => item.id === action.payload.id,
       );
-      // console.log(index);
+
       if (index !== -1) {
         state.expenses[index] = action.payload;
       }
-      // state.editingExpense = null;
+      state.editingExpense = null;
+      state.editingExpenseForm = null;
     },
     cancelEdit: (state) => {
       state.editingExpense = null;
@@ -52,6 +59,7 @@ export const {
   editExpenseStart,
   updateExpense,
   cancelEdit,
+  editExpenseFormStart,
 } = expenseSlice.actions;
 
 export default expenseSlice.reducer;

@@ -1,6 +1,6 @@
-import React, { useReducer, useState } from "react";
-import { useDispatch } from "react-redux";
-import { addExpense } from "../Redux/store/expenseSlice";
+import React, { useEffect, useReducer, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addExpense, updateExpense } from "../Redux/store/expenseSlice";
 import Input from "./Input";
 import Select from "./Select";
 
@@ -17,16 +17,29 @@ function reducer(state, action) {
       return { ...state, [action.payload.name]: action.payload.value };
     case "RESET":
       return initialState;
+    case "SETFORM":
+      return { ...action.payload };
     default:
       return state;
   }
 }
 
 function ExpenseForm() {
+  const editingExpenseForm = useSelector(
+    (state) => state.expense.editingExpenseForm,
+  );
+  // console.log(editingExpenseForm);
   const [state, dispatch] = useReducer(reducer, initialState);
   const [errors, setErrors] = useState({});
 
   const reduxDispatch = useDispatch();
+
+  useEffect(() => {
+    if (editingExpenseForm) {
+      dispatch({ type: "SETFORM", payload: editingExpenseForm });
+    }
+  }, [editingExpenseForm]);
+  // console.log(state);
 
   const inputHandler = (e) => {
     const { name, value } = e.target;
@@ -80,7 +93,13 @@ function ExpenseForm() {
     ) {
       return setErrors("Please fill all the fields");
     }
-    reduxDispatch(addExpense({ ...state, id: crypto.randomUUID() })); //redux
+    if (editingExpenseForm) {
+      reduxDispatch(updateExpense({ ...state, id: editingExpenseForm.id })); //redux
+    } else {
+      reduxDispatch(addExpense({ ...state, id: crypto.randomUUID() })); //redux
+    }
+
+    // reduxDispatch(addExpense({ ...state, id: crypto.randomUUID() })); //redux
     dispatch({ type: "RESET" });
   };
   return (
@@ -122,7 +141,12 @@ function ExpenseForm() {
         type="email"
         error={errors.email}
       /> */}
-      <button className="add-btn">Add</button>
+      <button
+        className={editingExpenseForm ? "update-btn" : "add-btn"}
+        // style={{ background: editingExpenseForm ? "red" : "" }}
+      >
+        {editingExpenseForm ? "Update" : "Add"}
+      </button>
     </form>
   );
 }
